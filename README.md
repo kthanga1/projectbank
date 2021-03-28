@@ -1,5 +1,5 @@
 # CSE-531 gRPC Project - distributed bank
-===================================
+
 
 ## Built With
 
