@@ -10,10 +10,9 @@ The project uses the below main libraries and languages.
 * [Protobuf](https://developers.google.com/protocol-buffers)
 
 ## Installation requirements
-Refer to: https://grpc.io/docs/languages/python/quickstart/. 
-The installation steps followed the docs in https://grpc.io/docs/languages/python/quickstart/ to setup python virtual 
-environment for this project. 
-After you setup the virtual environment; run the following commands:
+The installation steps followed the docs available in https://grpc.io/docs/languages/python/quickstart/ to setup python virtual 
+environment and grpc libraries for this project. 
+After you setup the python system-wide or in virtual environment; run the following commands:
 ```python -m pip install grpcio```
 ```python -m pip install grpcio-tools```
 
@@ -21,13 +20,13 @@ After you setup the virtual environment; run the following commands:
 ## Steps to execute:
 
 1. Clone the source to local folder. It consists of the proto file to generate the message file and services.
-2. Execute the command to run protobuf compiler to generate the Protobuf message file and Services or run `init.py`.  
+2. Execute the command to run protobuf compiler to generate the Protobuf message file and Services or run `init.py` that generates proto service and protobuf files.  
    ``python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./customers.proto``
 3. Copy the input json to customers.json file. The sample customers.json provided is available in the source folder.
-4. Command to create branch processes:
+4. Run the below command to create branch processes and start the grpc server:
 ``python -m Branch customers.json``
-5. Command to run the customer request: `python -m Customer customers.json`
-6. The output will be written to `output.json` file.
+5. Run command to run the customer requests: `python -m Customer customers.json`
+6. Onec customer script executes, the output will be written to `output.json` file.
 
 
 ## <b>Input sample:</b> 
