@@ -30,7 +30,8 @@ After you setup the virtual environment; run the following commands:
 6. The output will be written to `output.json` file.
 
 
-### <b>Input sample:</b> 
+## <b>Input sample:</b> 
+
 ```json
 [
   {
@@ -65,7 +66,8 @@ After you setup the virtual environment; run the following commands:
   }
 ]
 ```
-### <b>Output sample:</b>
+## <b>Output sample:</b>
+
 ```json
 {
   "id": 1,
