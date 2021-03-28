@@ -31,7 +31,7 @@ After you setup the virtual environment; run the following commands:
 
 
 ### <b>Input sample:</b> 
-
+```json
 [
   {
     "id" : 1,
@@ -64,9 +64,9 @@ After you setup the virtual environment; run the following commands:
     "balance" : 400
   }
 ]
-
+```
 ### <b>Output sample:</b>
-
+```json
 {
   "id": 1,
   "status": "recv",
@@ -106,7 +106,7 @@ After you setup the virtual environment; run the following commands:
     }
   ]
 }
-
+```
 
 
 
