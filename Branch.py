@@ -52,9 +52,8 @@ class Branch(customers_pb2_grpc.BranchServicer):
         print('New balance  {} '.format(self.balance))
         # Constructing protobuf response
         response = customers_pb2.EventResponse(id=self.id, status="recv")
-        innerResp = response.respData.add()
-        innerResp.interface = request.interface
-        innerResp.result = "success"
+        response.respData.append(customers_pb2.InterfaceResponse(interface=request.interface,
+                                                                 result="success"))
         self.Propagate_Withdraw(request, context)
         return response
 
@@ -65,9 +64,9 @@ class Branch(customers_pb2_grpc.BranchServicer):
         print('New balance  {} '.format(self.balance))
         # Constructing protobuf response
         response = customers_pb2.EventResponse(id=self.id, status="recv")
-        innerResp = response.respData.add()
-        innerResp.interface = request.interface
-        innerResp.result = "success"
+        response.respData.append(customers_pb2.InterfaceResponse(interface=request.interface,
+                                                                 result="success"))
+
         self.Propagate_Deposit(request, context)
         return response
 
@@ -75,10 +74,8 @@ class Branch(customers_pb2_grpc.BranchServicer):
         print('Query balance of branch {}'.format(self.id))
         response = customers_pb2.EventResponse(id=self.id, status="recv")
         # Constructing protobuf response
-        innerResp = response.respData.add()
-        innerResp.interface = request.interface
-        innerResp.result = "success"
-        innerResp.money = self.balance
+        response.respData.append(customers_pb2.InterfaceResponse(interface=request.interface,
+                                                                 result="success",money=self.balance))
 
         return response
 

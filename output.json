@@ -1,0 +1,39 @@
+{
+  "id": 1,
+  "status": "recv",
+  "respData": [
+    {
+      "interface": "query",
+      "result": "success",
+      "money": 500
+    }
+  ]
+}{
+  "id": 2,
+  "status": "recv",
+  "respData": [
+    {
+      "interface": "deposit",
+      "result": "success"
+    },
+    {
+      "interface": "query",
+      "result": "success",
+      "money": 500
+    }
+  ]
+}{
+  "id": 3,
+  "status": "recv",
+  "respData": [
+    {
+      "interface": "withdraw",
+      "result": "success"
+    },
+    {
+      "interface": "query",
+      "result": "success",
+      "money": 500
+    }
+  ]
+}

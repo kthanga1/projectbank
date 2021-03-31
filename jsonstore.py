@@ -30,10 +30,10 @@ def read_input(path):
     return customerids, customerlist , branchids, branchlist
 
 
-def write_output(outputlist):
+def write_output(results):
     with open('output.json', 'w') as file:
-        for cust_id in outputlist:
-            file.writelines(json_format.MessageToJson(outputlist[cust_id].recvMsg[0]))
+        for result in results:
+            file.writelines(json_format.MessageToJson(result[0]))
         return 1
 
 
