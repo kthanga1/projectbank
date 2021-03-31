@@ -13,7 +13,6 @@ import datetime
 
 _ONE_DAY = datetime.timedelta(days=1)
 _branches = []
-_customers = []
 pidList = []
 portList = {}
 
@@ -126,27 +125,11 @@ def _wait_forever(server):
     except KeyboardInterrupt:
         server.stop(1)
 
-
-# Create multiple branch processes
-def create_branch_processes(port, branch_id, balance, branches):
-    sys.stdout.flush()
-    workers = []
-    bind_address = 'localhost:{}'.format(port)
-
-    worker = multiprocessing.Process(target=start_server,
-                                     args=(bind_address, port, branch_id, balance, branches),
-                                     name='Branch_{}'.format(branch_id))
-
-    workers.append(worker)
-    worker.start()
-    print('starting branch {} server in address {}, PID - {}'.format(branch_id, bind_address, worker.pid))
-    return worker.pid
-
-
-
-def start_server(bind_address, port, branch_id, balance, branches):
+def start_server(port, branch_id, balance, branches):
     """Start a server in a subprocess."""
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=2, ))
+    bind_address = 'localhost:{}'.format(port)
+    print('Server Launched in {}'.format(bind_address))
     customers_pb2_grpc.add_BranchServicer_to_server(Branch(branch_id, balance, branches), server)
     server.add_insecure_port(bind_address)
     server.start()
@@ -155,13 +138,17 @@ def start_server(bind_address, port, branch_id, balance, branches):
 
 
 
-def spinbranches(branch_ids, branch_list):
+def create_branch_processes(branch_ids, branch_list):
     # Input paramteres include list of branch id's and branch input list incl money
-    for branch in branch_list:
-        port = get_free_loopback_tcp_port()
-        portList[branch.id] = port
-        pid = create_branch_processes(port, branch.id, branch.balance, branch_ids)
-        pidList.append(pid)
+    cust_idports = {id:get_free_loopback_tcp_port() for id in branch_ids}
+
+    workers = [multiprocessing.Process(target=start_server,
+                            args=( cust_idports[branch.id], branch.id, branch.balance, branch_ids),
+                            name='Branch_{}'.format(branch.id)) for branch in branch_list]
+    for worker in workers:
+        worker.start()
+        pidList.append(worker.pid)
+    return cust_idports
 
 
 if __name__ == '__main__':
@@ -171,8 +158,7 @@ if __name__ == '__main__':
 
     filename = sys.argv[1]
     inputreq = jsonstore.read_input(filename)
-    spinbranches(inputreq[2], inputreq[3])  # Pass branchlist, branchid array and port no
-    print(portList)
+    portList = spinbranches(inputreq[2], inputreq[3])  # Pass branchlist, branchid array and port no
     status = jsonstore.write_portlist(portList)
     if len(pidList) > 0 and status is True:
         print("Launched servers successfully")

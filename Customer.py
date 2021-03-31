@@ -10,11 +10,6 @@ from multiprocessing import Queue
 
 customer_list = {}
 customerPortList = customers_pb2.CustNodes()
-pidList = []
-inputCustJson = []
-CPU_COUNT = multiprocessing.cpu_count()
-
-
 outQueue = Queue()
 
 class Customer:
@@ -36,6 +31,7 @@ class Customer:
 
     # TODO: students are expected to send out the events to the Bank
     def executeEvents(self, outQueue):
+        print('Executing {}'.format(self.id))
         for event in self.events:
             if event.interface == 'deposit':
                 print('Starting Event {} ->  deposit money in Branch {} by customer {}'.format(event.id, self.id, self.id))
@@ -103,9 +99,10 @@ if __name__ == '__main__':
     filename = sys.argv[1]
     inputreq = jsonstore.read_input(filename)
     portlist = jsonstore.read_portlist()
+
     # start an equal number of customers as branches.
     init_customers(inputreq[1], portlist)
-    inputCustJson = inputreq[1]
+
     # fetch the list of branch server ports.
     initstublist_branches()
     # Execute customer processes and invoke the event messages in random, Cust{id} to B{id}
