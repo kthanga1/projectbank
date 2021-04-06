@@ -33,7 +33,7 @@ def read_input(path):
 def write_output(results):
     with open('output.json', 'w') as file:
         for result in results:
-            file.writelines(json_format.MessageToJson(result[0]))
+            file.writelines(json_format.MessageToJson(result))
         return 1
 
 

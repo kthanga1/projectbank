@@ -31,18 +31,18 @@ class BranchStub(object):
                 )
         self.Propagate_Deposit = channel.unary_unary(
                 '/bank.Branch/Propagate_Deposit',
-                request_serializer=customers__pb2.Balance.SerializeToString,
+                request_serializer=customers__pb2.Event.SerializeToString,
                 response_deserializer=customers__pb2.ResponseStatus.FromString,
                 )
         self.Propagate_Withdraw = channel.unary_unary(
                 '/bank.Branch/Propagate_Withdraw',
-                request_serializer=customers__pb2.Balance.SerializeToString,
+                request_serializer=customers__pb2.Event.SerializeToString,
                 response_deserializer=customers__pb2.ResponseStatus.FromString,
                 )
         self.MsgDelivery = channel.unary_unary(
                 '/bank.Branch/MsgDelivery',
                 request_serializer=customers__pb2.Event.SerializeToString,
-                response_deserializer=customers__pb2.ResponseStatus.FromString,
+                response_deserializer=customers__pb2.EventResponse.FromString,
                 )
         self.InitStubs = channel.unary_unary(
                 '/bank.Branch/InitStubs',
@@ -116,18 +116,18 @@ def add_BranchServicer_to_server(servicer, server):
             ),
             'Propagate_Deposit': grpc.unary_unary_rpc_method_handler(
                     servicer.Propagate_Deposit,
-                    request_deserializer=customers__pb2.Balance.FromString,
+                    request_deserializer=customers__pb2.Event.FromString,
                     response_serializer=customers__pb2.ResponseStatus.SerializeToString,
             ),
             'Propagate_Withdraw': grpc.unary_unary_rpc_method_handler(
                     servicer.Propagate_Withdraw,
-                    request_deserializer=customers__pb2.Balance.FromString,
+                    request_deserializer=customers__pb2.Event.FromString,
                     response_serializer=customers__pb2.ResponseStatus.SerializeToString,
             ),
             'MsgDelivery': grpc.unary_unary_rpc_method_handler(
                     servicer.MsgDelivery,
                     request_deserializer=customers__pb2.Event.FromString,
-                    response_serializer=customers__pb2.ResponseStatus.SerializeToString,
+                    response_serializer=customers__pb2.EventResponse.SerializeToString,
             ),
             'InitStubs': grpc.unary_unary_rpc_method_handler(
                     servicer.InitStubs,
@@ -207,7 +207,7 @@ class Branch(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/bank.Branch/Propagate_Deposit',
-            customers__pb2.Balance.SerializeToString,
+            customers__pb2.Event.SerializeToString,
             customers__pb2.ResponseStatus.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -224,7 +224,7 @@ class Branch(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/bank.Branch/Propagate_Withdraw',
-            customers__pb2.Balance.SerializeToString,
+            customers__pb2.Event.SerializeToString,
             customers__pb2.ResponseStatus.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -242,7 +242,7 @@ class Branch(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/bank.Branch/MsgDelivery',
             customers__pb2.Event.SerializeToString,
-            customers__pb2.ResponseStatus.FromString,
+            customers__pb2.EventResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0f\x63ustomers.proto\x12\x04\x62\x61nk\"T\n\nCustomersI\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04type\x18\x02 \x01(\t\x12\x1b\n\x06\x65vents\x18\x03 \x03(\x0b\x32\x0b.bank.Event\x12\x0f\n\x07\x62\x61lance\x18\x04 \x01(\x05\"5\n\x05\x45vent\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\tinterface\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x05\"V\n\rEventResponse\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\t\x12)\n\x08respData\x18\x03 \x03(\x0b\x32\x17.bank.InterfaceResponse\"E\n\x11InterfaceResponse\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x05\"-\n\tCustNodes\x12 \n\x07idports\x18\x01 \x03(\x0b\x32\x0f.bank.NodePorts\"\'\n\tNodePorts\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06portNo\x18\x02 \x01(\x05\".\n\x0eResponseStatus\x12\x1c\n\x06result\x18\x01 \x01(\x0e\x32\x0c.bank.Result\"\x1a\n\x07\x42\x61lance\x12\x0f\n\x07\x62\x61lance\x18\x01 \x01(\x05\"/\n\tEventList\x12\"\n\x05\x65vent\x18\x01 \x03(\x0b\x32\x13.bank.EventResponse*\"\n\x06Result\x12\x0b\n\x07\x46\x41ILURE\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x32\xf7\x02\n\x06\x42ranch\x12.\n\x08Withdraw\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12-\n\x07\x44\x65posit\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12+\n\x05Query\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12:\n\x11Propagate_Deposit\x12\r.bank.Balance\x1a\x14.bank.ResponseStatus\"\x00\x12;\n\x12Propagate_Withdraw\x12\r.bank.Balance\x1a\x14.bank.ResponseStatus\"\x00\x12\x32\n\x0bMsgDelivery\x12\x0b.bank.Event\x1a\x14.bank.ResponseStatus\"\x00\x12\x34\n\tInitStubs\x12\x0f.bank.CustNodes\x1a\x14.bank.ResponseStatus\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x0f\x63ustomers.proto\x12\x04\x62\x61nk\"T\n\nCustomersI\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04type\x18\x02 \x01(\t\x12\x1b\n\x06\x65vents\x18\x03 \x03(\x0b\x32\x0b.bank.Event\x12\x0f\n\x07\x62\x61lance\x18\x04 \x01(\x05\"5\n\x05\x45vent\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\tinterface\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x05\"V\n\rEventResponse\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\t\x12)\n\x08respData\x18\x03 \x03(\x0b\x32\x17.bank.InterfaceResponse\"E\n\x11InterfaceResponse\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x05\"-\n\tCustNodes\x12 \n\x07idports\x18\x01 \x03(\x0b\x32\x0f.bank.NodePorts\"\'\n\tNodePorts\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06portNo\x18\x02 \x01(\x05\".\n\x0eResponseStatus\x12\x1c\n\x06result\x18\x01 \x01(\x0e\x32\x0c.bank.Result\"\x1a\n\x07\x42\x61lance\x12\x0f\n\x07\x62\x61lance\x18\x01 \x01(\x05\"/\n\tEventList\x12\"\n\x05\x65vent\x18\x01 \x03(\x0b\x32\x13.bank.EventResponse*\"\n\x06Result\x12\x0b\n\x07\x46\x41ILURE\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x32\xf2\x02\n\x06\x42ranch\x12.\n\x08Withdraw\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12-\n\x07\x44\x65posit\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12+\n\x05Query\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12\x38\n\x11Propagate_Deposit\x12\x0b.bank.Event\x1a\x14.bank.ResponseStatus\"\x00\x12\x39\n\x12Propagate_Withdraw\x12\x0b.bank.Event\x1a\x14.bank.ResponseStatus\"\x00\x12\x31\n\x0bMsgDelivery\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12\x34\n\tInitStubs\x12\x0f.bank.CustNodes\x1a\x14.bank.ResponseStatus\"\x00\x62\x06proto3'
 )
 
 _RESULT = _descriptor.EnumDescriptor(
@@ -501,7 +501,7 @@ _BRANCH = _descriptor.ServiceDescriptor(
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
   serialized_start=575,
-  serialized_end=950,
+  serialized_end=945,
   methods=[
   _descriptor.MethodDescriptor(
     name='Withdraw',
@@ -538,7 +538,7 @@ _BRANCH = _descriptor.ServiceDescriptor(
     full_name='bank.Branch.Propagate_Deposit',
     index=3,
     containing_service=None,
-    input_type=_BALANCE,
+    input_type=_EVENT,
     output_type=_RESPONSESTATUS,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
@@ -548,7 +548,7 @@ _BRANCH = _descriptor.ServiceDescriptor(
     full_name='bank.Branch.Propagate_Withdraw',
     index=4,
     containing_service=None,
-    input_type=_BALANCE,
+    input_type=_EVENT,
     output_type=_RESPONSESTATUS,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
@@ -559,7 +559,7 @@ _BRANCH = _descriptor.ServiceDescriptor(
     index=5,
     containing_service=None,
     input_type=_EVENT,
-    output_type=_RESPONSESTATUS,
+    output_type=_EVENTRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

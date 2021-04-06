@@ -6,9 +6,9 @@ service Branch{
     rpc Withdraw(Event) returns (EventResponse) {}
     rpc Deposit(Event) returns (EventResponse) {}
     rpc Query(Event) returns (EventResponse) {}
-    rpc Propagate_Deposit(Balance) returns (ResponseStatus) {}
-    rpc Propagate_Withdraw(Balance) returns (ResponseStatus) {}
-    rpc MsgDelivery(Event) returns (ResponseStatus) {}
+    rpc Propagate_Deposit(Event) returns (ResponseStatus) {}
+    rpc Propagate_Withdraw(Event) returns (ResponseStatus) {}
+    rpc MsgDelivery(Event) returns (EventResponse) {}
     rpc InitStubs(CustNodes) returns (ResponseStatus){}
 }
 

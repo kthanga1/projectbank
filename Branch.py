@@ -12,7 +12,6 @@ import time
 import datetime
 
 _ONE_DAY = datetime.timedelta(days=1)
-_branches = []
 pidList = []
 portList = {}
 
@@ -37,17 +36,22 @@ class Branch(customers_pb2_grpc.BranchServicer):
 
     # TODO: students are expected to process requests from both Client and Branch
     def MsgDelivery(self, request, context):
-        print('{} branch balance with {} '.format(request.interface, request.money))
+        print('Execute {} at Branch {} '.format(request.interface, self.id))
         if request.interface == "withdraw":
-            self.balance = self.balance - request.money
+            resp = self.Withdraw(request, context)
         elif request.interface == "deposit":
-            self.balance = self.balance + request.money
-        return customers_pb2.ResponseStatus(result=customers_pb2.SUCCESS)
+            resp = self.Deposit(request, context)
+        elif request.interface == "query":
+            resp = self.Query(request, context)
+        elif request.interface == "propagate_deposit":
+            resp = self.Update_Deposit(request, context)
+        elif request.interface == "propagate_withdraw":
+            resp = self.Update_Withdraw(request, context)
+        return resp
 
     def Withdraw(self, request, context):
-        print('Current balance  {} withdraw {}'.format(self.balance, request.money))
-        if request.interface == "withdraw":
-            self.balance = self.balance - request.money
+        print('Branch {} -- Current balance  {} withdraw {}'.format(self.id, self.balance, request.money))
+        self.balance = self.balance - request.money
         print('New balance  {} '.format(self.balance))
         # Constructing protobuf response
         response = customers_pb2.EventResponse(id=self.id, status="recv")
@@ -57,7 +61,7 @@ class Branch(customers_pb2_grpc.BranchServicer):
         return response
 
     def Deposit(self, request, context):
-        print('Current balance  {} deposit {}'.format(self.balance, request.money))
+        print('Branch {} -- Current balance  {} deposit {}'.format(self.id, self.balance, request.money))
         if request.interface == "deposit":
             self.balance = self.balance + request.money
         print('New balance  {} '.format(self.balance))
@@ -71,26 +75,36 @@ class Branch(customers_pb2_grpc.BranchServicer):
 
     def Query(self, request, context):
         print('Query balance of branch {}'.format(self.id))
+        time.sleep(3)
         response = customers_pb2.EventResponse(id=self.id, status="recv")
         # Constructing protobuf response
         response.respData.append(customers_pb2.InterfaceResponse(interface=request.interface,
                                                                  result="success",money=self.balance))
-
         return response
 
     def Propagate_Deposit(self, request, context):
         print('Propagating deposit to other branches {}'.format(request.money))
         for stub in self.stubList:
-            resp = self.stubList[stub].MsgDelivery(request)
+            propagate_req = customers_pb2.Event(id=request.id, interface="propagate_deposit", money=request.money)
+            resp = self.stubList[stub].MsgDelivery(propagate_req)
             print('Propagated deposit  {} balance to branch {} '.format(request.money, stub))
         return resp
 
     def Propagate_Withdraw(self, request, context):
         print('Propagating withdraw to other branches {}'.format(request.money))
         for stub in self.stubList:
-            resp = self.stubList[stub].MsgDelivery(request)
+            propagate_req = customers_pb2.Event(id=request.id, interface="propagate_withdraw", money=request.money)
+            resp = self.stubList[stub].MsgDelivery(propagate_req)
             print('Propagated withdraw  {} balance to branch {} '.format(request.money, stub))
         return resp
+
+    def Update_Deposit(self, request, context):
+        self.balance = self.balance + request.money
+        return customers_pb2.ResponseStatus(result=customers_pb2.SUCCESS)
+
+    def Update_Withdraw(self, request, context):
+        self.balance = self.balance - request.money
+        return customers_pb2.ResponseStatus(result=customers_pb2.SUCCESS)
 
     def InitStubs(self, request, context):
         status = customers_pb2.ResponseStatus(result=customers_pb2.FAILURE)
@@ -125,11 +139,27 @@ def _wait_forever(server):
     except KeyboardInterrupt:
         server.stop(1)
 
-def start_server(port, branch_id, balance, branches):
-    """Start a server in a subprocess."""
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=2, ))
+
+# Create multiple branch processes
+def create_branch_processes(port, branch_id, balance, branches):
+    sys.stdout.flush()
+    workers = []
     bind_address = 'localhost:{}'.format(port)
-    print('Server Launched in {}'.format(bind_address))
+
+    worker = multiprocessing.Process(target=start_server,
+                                     args=(bind_address, port, branch_id, balance, branches),
+                                     name='Branch_{}'.format(branch_id))
+
+    workers.append(worker)
+    worker.start()
+    print('starting branch {} server in address {}, PID - {}'.format(branch_id, bind_address, worker.pid))
+    return worker.pid
+
+
+
+def start_server(bind_address, port, branch_id, balance, branches):
+    """Start a server in a subprocess."""
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10, ))
     customers_pb2_grpc.add_BranchServicer_to_server(Branch(branch_id, balance, branches), server)
     server.add_insecure_port(bind_address)
     server.start()
@@ -138,17 +168,13 @@ def start_server(port, branch_id, balance, branches):
 
 
 
-def create_branch_processes(branch_ids, branch_list):
+def spinbranches(branch_ids, branch_list):
     # Input paramteres include list of branch id's and branch input list incl money
-    cust_idports = {id:get_free_loopback_tcp_port() for id in branch_ids}
-
-    workers = [multiprocessing.Process(target=start_server,
-                            args=( cust_idports[branch.id], branch.id, branch.balance, branch_ids),
-                            name='Branch_{}'.format(branch.id)) for branch in branch_list]
-    for worker in workers:
-        worker.start()
-        pidList.append(worker.pid)
-    return cust_idports
+    for branch in branch_list:
+        port = get_free_loopback_tcp_port()
+        portList[branch.id] = port
+        pid = create_branch_processes(port, branch.id, branch.balance, branch_ids)
+        pidList.append(pid)
 
 
 if __name__ == '__main__':
@@ -158,7 +184,8 @@ if __name__ == '__main__':
 
     filename = sys.argv[1]
     inputreq = jsonstore.read_input(filename)
-    portList = spinbranches(inputreq[2], inputreq[3])  # Pass branchlist, branchid array and port no
+    spinbranches(inputreq[2], inputreq[3])  # Pass branchlist, branchid array and port no
+    print(portList)
     status = jsonstore.write_portlist(portList)
     if len(pidList) > 0 and status is True:
         print("Launched servers successfully")

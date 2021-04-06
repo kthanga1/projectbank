@@ -5,21 +5,7 @@
     {
       "interface": "query",
       "result": "success",
-      "money": 700
-    }
-  ]
-}{
-  "id": 3,
-  "status": "recv",
-  "respData": [
-    {
-      "interface": "withdraw",
-      "result": "success"
-    },
-    {
-      "interface": "query",
-      "result": "success",
-      "money": 700
+      "money": 500
     }
   ]
 }{
@@ -33,7 +19,21 @@
     {
       "interface": "query",
       "result": "success",
-      "money": 700
+      "money": 500
+    }
+  ]
+}{
+  "id": 3,
+  "status": "recv",
+  "respData": [
+    {
+      "interface": "withdraw",
+      "result": "success"
+    },
+    {
+      "interface": "query",
+      "result": "success",
+      "money": 500
     }
   ]
 }

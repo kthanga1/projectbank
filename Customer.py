@@ -5,12 +5,13 @@ import jsonstore
 import grpc
 import sys
 import time
-import multiprocessing
-from multiprocessing import Queue
+import concurrent.futures
 
-customer_list = {}
+
 customerPortList = customers_pb2.CustNodes()
-outQueue = Queue()
+port_list = []
+out_list = []
+
 
 class Customer:
     def __init__(self, id, events):
@@ -30,66 +31,34 @@ class Customer:
         self.stub = customers_pb2_grpc.BranchStub(channel)
 
     # TODO: students are expected to send out the events to the Bank
-    def executeEvents(self, outQueue):
-        print('Executing {}'.format(self.id))
+    def executeEvents(self):
+        print('Executing process {}'.format(self.id))
         for event in self.events:
-            if event.interface == 'deposit':
-                print('Starting Event {} ->  deposit money in Branch {} by customer {}'.format(event.id, self.id, self.id))
-                resp = self.stub.Deposit(event)
-                print(resp)
+            print('Event {} ->  Querying balance from Branch {} by customer {}'.format(event.id, self.id , self.id))
+            # if event.interface == 'query':
+            #     time.sleep(3)
+            resp = self.stub.MsgDelivery(event)
+            if len(self.recvMsg) > 0:
+                self.recvMsg[0].respData.extend(resp.respData)
+            else:
                 self.recvMsg.append(resp)
-                if resp.status != 'recv':
-                    print('Event {} -> Failed to Deposit money into Branch {} by customer {}'.format(event.id, self.id, self.id))
-            elif event.interface == 'withdraw' :
-                print('Starting Event {} -> withdraw money from Branch {} by customer {}'.format(event.id, self.id, self.id))
-                resp = self.stub.Withdraw(event)
-                print(resp)
-                self.recvMsg.append(resp)
-                if resp.status != 'recv':
-                    print('Event {} -> Failed to Deposit money into Branch {} by customer {}'.format(event.id, self.id, self.id))
-            elif event.interface == 'query' :
-                print('Event {} ->  Querying balance from Branch {} by customer {}'.format(event.id, self.id , self.id))
-                time.sleep(3)
-                resp = self.stub.Query(event)
-                if len(self.recvMsg) > 0:
-                    self.recvMsg[0].respData.extend(resp.respData)
-                else:
-                    self.recvMsg.append(resp)
-        outQueue.put(self.recvMsg)
-
-
 
 # Create multiple customer processes according to the customer input
-def create_customer_processes():
-    sys.stdout.flush()
-    workers = []
-    for customer in customer_list:
-        worker = multiprocessing.Process(target=customer_list[customer].executeEvents,args=([outQueue,]))
-        workers.append(worker)
-
-    for worker in workers:
-        worker.start()
-    worker.join()
-    results = [outQueue.get() for worker in workers]
-
-    return results
+def init_customers(customer):
+    customernode = Customer(customer.id, customer.events)
+    customernode.createStub(port_list[str(customer.id)])
+    # add pair of customer id and port number for creating customer stubs within each branch
+    response = customernode.stub.InitStubs(customerPortList)
+    print("Initializing Branch stubs --> {}".format("Success" if response.result == 1 else "Failure"))
+    customernode.executeEvents()
+    return customernode.recvMsg
 
 
-def init_customers(customers, branchports):
-    for customer in customers:
-        customernode = Customer(customer.id, customer.events)
-        customernode.createStub(branchports[str(customer.id)])
-        customer_list[customer.id] = customernode
-        # add pair of customer id and port number for creating customer stubs within each branch
+def custom_port_pair(customers):
+    for cust in customers:
         nodeport = customerPortList.idports.add()
-        nodeport.id=customer.id
-        nodeport.portNo = branchports[str(customer.id)]
-
-
-def initstublist_branches():
-    for customer_id in customer_list:
-        response = customer_list[customer_id].stub.InitStubs(customerPortList)
-        print("Initializing Branch stubs --> {}".format("Success" if response.result == 1 else "Failure"))
+        nodeport.id = cust.id
+        nodeport.portNo = port_list[str(cust.id)]
 
 
 if __name__ == '__main__':
@@ -98,16 +67,19 @@ if __name__ == '__main__':
         exit()
     filename = sys.argv[1]
     inputreq = jsonstore.read_input(filename)
-    portlist = jsonstore.read_portlist()
-
+    port_list = jsonstore.read_portlist()
     # start an equal number of customers as branches.
-    init_customers(inputreq[1], portlist)
 
+    inputCustJson = inputreq[1]
     # fetch the list of branch server ports.
-    initstublist_branches()
-    # Execute customer processes and invoke the event messages in random, Cust{id} to B{id}
-    results = create_customer_processes()
+    custom_port_pair(inputreq[1])
 
-    if jsonstore.write_output(results) == 1:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_results = executor.map(init_customers, inputreq[1])
+        for when_completed in future_results:
+            out_list.append(when_completed[0])
+
+
+    if jsonstore.write_output(out_list) == 1:
         print("Output written to file --> output.json")
 
