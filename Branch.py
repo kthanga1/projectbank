@@ -1,3 +1,4 @@
+import threading
 import grpc
 import customers_pb2
 import customers_pb2_grpc
@@ -5,13 +6,17 @@ from concurrent import futures
 import multiprocessing
 import sys
 import os
-import socket
 import jsonstore
-import atexit
+import socket
 import time
 import datetime
+import asyncio
+from grpc_reflection.v1alpha import reflection
+from grpc_health.v1 import health
+from grpc_health.v1 import health_pb2
+from grpc_health.v1 import health_pb2_grpc
+from grpc import aio
 
-_ONE_DAY = datetime.timedelta(days=1)
 pidList = []
 portList = {}
 
@@ -34,90 +39,111 @@ class Branch(customers_pb2_grpc.BranchServicer):
         # TODO: students are expected to store the processID of the branches
         self.processId = os.getpid()
 
+        self.lock = threading.Lock()
+
     # TODO: students are expected to process requests from both Client and Branch
-    def MsgDelivery(self, request, context):
+    async def MsgDelivery(self, request, context):
+        # request = next(request_iterator)
         print('Execute {} at Branch {} '.format(request.interface, self.id))
         if request.interface == "withdraw":
-            resp = self.Withdraw(request, context)
+            resp = await self.Withdraw(request, context)
         elif request.interface == "deposit":
-            resp = self.Deposit(request, context)
+            resp = await self.Deposit(request, context)
         elif request.interface == "query":
-            resp = self.Query(request, context)
+            resp = await self.Query(request, context)
         elif request.interface == "propagate_deposit":
             resp = self.Update_Deposit(request, context)
         elif request.interface == "propagate_withdraw":
             resp = self.Update_Withdraw(request, context)
         return resp
 
-    def Withdraw(self, request, context):
+    async def Withdraw(self, request, context):
         print('Branch {} -- Current balance  {} withdraw {}'.format(self.id, self.balance, request.money))
-        self.balance = self.balance - request.money
+        self.update_balance(request.money, 'withdraw')
         print('New balance  {} '.format(self.balance))
         # Constructing protobuf response
         response = customers_pb2.EventResponse(id=self.id, status="recv")
         response.respData.append(customers_pb2.InterfaceResponse(interface=request.interface,
                                                                  result="success"))
-        self.Propagate_Withdraw(request, context)
+        await self.Propagate_Withdraw(request, context)
         return response
 
-    def Deposit(self, request, context):
+    async def Deposit(self, request, context):
         print('Branch {} -- Current balance  {} deposit {}'.format(self.id, self.balance, request.money))
-        if request.interface == "deposit":
-            self.balance = self.balance + request.money
+        self.update_balance(request.money, 'deposit')
         print('New balance  {} '.format(self.balance))
         # Constructing protobuf response
         response = customers_pb2.EventResponse(id=self.id, status="recv")
         response.respData.append(customers_pb2.InterfaceResponse(interface=request.interface,
                                                                  result="success"))
 
-        self.Propagate_Deposit(request, context)
+        await self.Propagate_Deposit(request, context)
         return response
 
-    def Query(self, request, context):
+    async def Query(self, request, context):
         print('Query balance of branch {}'.format(self.id))
         time.sleep(3)
+        try:
+            self.lock.acquire(blocking=True)
+            money = self.balance
+        finally:
+            self.lock.release()
         response = customers_pb2.EventResponse(id=self.id, status="recv")
         # Constructing protobuf response
         response.respData.append(customers_pb2.InterfaceResponse(interface=request.interface,
-                                                                 result="success",money=self.balance))
+                                                                 result="success", money=money))
         return response
 
-    def Propagate_Deposit(self, request, context):
+    async def Propagate_Deposit(self, request, context):
         print('Propagating deposit to other branches {}'.format(request.money))
         for stub in self.stubList:
             propagate_req = customers_pb2.Event(id=request.id, interface="propagate_deposit", money=request.money)
-            resp = self.stubList[stub].MsgDelivery(propagate_req)
+            resp = await self.stubList[stub].MsgDelivery(propagate_req)
             print('Propagated deposit  {} balance to branch {} '.format(request.money, stub))
-        return resp
 
-    def Propagate_Withdraw(self, request, context):
+    async def Propagate_Withdraw(self, request, context):
         print('Propagating withdraw to other branches {}'.format(request.money))
         for stub in self.stubList:
             propagate_req = customers_pb2.Event(id=request.id, interface="propagate_withdraw", money=request.money)
-            resp = self.stubList[stub].MsgDelivery(propagate_req)
+            resp = await self.stubList[stub].MsgDelivery(propagate_req)
             print('Propagated withdraw  {} balance to branch {} '.format(request.money, stub))
-        return resp
 
     def Update_Deposit(self, request, context):
-        self.balance = self.balance + request.money
+        self.update_balance(request.money, 'deposit')
         return customers_pb2.ResponseStatus(result=customers_pb2.SUCCESS)
 
     def Update_Withdraw(self, request, context):
-        self.balance = self.balance - request.money
+        self.update_balance(request.money, 'withdraw')
         return customers_pb2.ResponseStatus(result=customers_pb2.SUCCESS)
 
-    def InitStubs(self, request, context):
+    async def InitStubs(self, request, context):
         status = customers_pb2.ResponseStatus(result=customers_pb2.FAILURE)
-        idports = request.idports
-        for idport in idports:
-            if idport.id is not self.id:
-                channel = grpc.insecure_channel('localhost:{}'.format(idport.portNo),
-                                                options=(('grpc.enable_http_proxy', 0),))
-                self.stubList[idport.id] = customers_pb2_grpc.BranchStub(channel)
-        if len(self.stubList) > 0:
-            status.result = customers_pb2.Result.SUCCESS
-        print('Customer stub list initialized in Branches')
+        try:
+            idports = request.idports
+            for idport in idports:
+                if idport.id is not self.id:
+                    channel = grpc.aio.insecure_channel('localhost:{}'.format(idport.portNo))
+                    self.stubList[idport.id] = customers_pb2_grpc.BranchStub(channel)
+
+            if len(self.stubList) > 0:
+                status.result = customers_pb2.Result.SUCCESS
+            print('Customer stub list initialized in Branches')
+        except Exception as excp:
+            print(excp)
         return status
+
+    def update_balance(self, money, action):
+        print(f'update deposit {money}')
+        try:
+            self.lock.acquire(blocking=True)
+            if action == 'withdraw':
+                self.balance = self.balance - money
+            elif action == 'deposit':
+                self.balance = self.balance + money
+        finally:
+            self.lock.release()
+        print(f'balance{self.balance}')
+        return self.balance
 
 
 # Grpc example code to find an available port
@@ -131,13 +157,14 @@ def get_free_loopback_tcp_port():
     tcp_socket.close()
     return address_tuple[1]
 
+
 # Grpc example code to wait forever for 1 day
-def _wait_forever(server):
+async def _wait_forever(server):
     try:
         while True:
-            time.sleep(_ONE_DAY.total_seconds())
+            time.sleep(datetime.timedelta(days=1).total_seconds())
     except KeyboardInterrupt:
-        server.stop(1)
+        await server.stop(1)
 
 
 # Create multiple branch processes
@@ -146,7 +173,7 @@ def create_branch_processes(port, branch_id, balance, branches):
     workers = []
     bind_address = 'localhost:{}'.format(port)
 
-    worker = multiprocessing.Process(target=start_server,
+    worker = multiprocessing.Process(target=create_branch_async,
                                      args=(bind_address, port, branch_id, balance, branches),
                                      name='Branch_{}'.format(branch_id))
 
@@ -156,16 +183,31 @@ def create_branch_processes(port, branch_id, balance, branches):
     return worker.pid
 
 
+def create_branch_async(bind_address, port, branch_id, balance, branches):
+    print(bind_address)
+    asyncio.run(start_server(bind_address, port, branch_id, balance, branches))
 
-def start_server(bind_address, port, branch_id, balance, branches):
+
+async def start_server(bind_address, port, branch_id, balance, branches):
     """Start a server in a subprocess."""
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10, ))
+    server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=10, ))
     customers_pb2_grpc.add_BranchServicer_to_server(Branch(branch_id, balance, branches), server)
-    server.add_insecure_port(bind_address)
-    server.start()
-    # server.wait_for_termination()
-    _wait_forever(server)
+    health_servicer = health.HealthServicer(experimental_non_blocking=True,
+                                            experimental_thread_pool=futures.ThreadPoolExecutor(max_workers=1))
+    health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
 
+    services = tuple(service.full_name for service in customers_pb2.DESCRIPTOR.services_by_name.values()) \
+               + (reflection.SERVICE_NAME, health.SERVICE_NAME)
+
+    reflection.enable_server_reflection(services, server)
+    server.add_insecure_port(bind_address)
+    await server.start()
+    # Mark all services as healthy.
+    overall_server_health = ""
+    for service in services + (overall_server_health,):
+        health_servicer.set(service, health_pb2.HealthCheckResponse.SERVING)
+
+    await server.wait_for_termination()
 
 
 def spinbranches(branch_ids, branch_list):

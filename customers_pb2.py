@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0f\x63ustomers.proto\x12\x04\x62\x61nk\"T\n\nCustomersI\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04type\x18\x02 \x01(\t\x12\x1b\n\x06\x65vents\x18\x03 \x03(\x0b\x32\x0b.bank.Event\x12\x0f\n\x07\x62\x61lance\x18\x04 \x01(\x05\"5\n\x05\x45vent\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\tinterface\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x05\"V\n\rEventResponse\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\t\x12)\n\x08respData\x18\x03 \x03(\x0b\x32\x17.bank.InterfaceResponse\"E\n\x11InterfaceResponse\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x05\"-\n\tCustNodes\x12 \n\x07idports\x18\x01 \x03(\x0b\x32\x0f.bank.NodePorts\"\'\n\tNodePorts\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06portNo\x18\x02 \x01(\x05\".\n\x0eResponseStatus\x12\x1c\n\x06result\x18\x01 \x01(\x0e\x32\x0c.bank.Result\"\x1a\n\x07\x42\x61lance\x12\x0f\n\x07\x62\x61lance\x18\x01 \x01(\x05\"/\n\tEventList\x12\"\n\x05\x65vent\x18\x01 \x03(\x0b\x32\x13.bank.EventResponse*\"\n\x06Result\x12\x0b\n\x07\x46\x41ILURE\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x32\xf2\x02\n\x06\x42ranch\x12.\n\x08Withdraw\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12-\n\x07\x44\x65posit\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12+\n\x05Query\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12\x38\n\x11Propagate_Deposit\x12\x0b.bank.Event\x1a\x14.bank.ResponseStatus\"\x00\x12\x39\n\x12Propagate_Withdraw\x12\x0b.bank.Event\x1a\x14.bank.ResponseStatus\"\x00\x12\x31\n\x0bMsgDelivery\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12\x34\n\tInitStubs\x12\x0f.bank.CustNodes\x1a\x14.bank.ResponseStatus\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x0f\x63ustomers.proto\x12\x04\x62\x61nk\"T\n\nCustomersI\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04type\x18\x02 \x01(\t\x12\x1b\n\x06\x65vents\x18\x03 \x03(\x0b\x32\x0b.bank.Event\x12\x0f\n\x07\x62\x61lance\x18\x04 \x01(\x05\"D\n\x05\x45vent\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\tinterface\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x05\x12\r\n\x05\x63lock\x18\x04 \x01(\x05\"V\n\rEventResponse\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06status\x18\x02 \x01(\t\x12)\n\x08respData\x18\x03 \x03(\x0b\x32\x17.bank.InterfaceResponse\"E\n\x11InterfaceResponse\x12\x11\n\tinterface\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\t\x12\r\n\x05money\x18\x03 \x01(\x05\"-\n\tCustNodes\x12 \n\x07idports\x18\x01 \x03(\x0b\x32\x0f.bank.NodePorts\"\'\n\tNodePorts\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06portNo\x18\x02 \x01(\x05\".\n\x0eResponseStatus\x12\x1c\n\x06result\x18\x01 \x01(\x0e\x32\x0c.bank.Result\"\x1a\n\x07\x42\x61lance\x12\x0f\n\x07\x62\x61lance\x18\x01 \x01(\x05\"/\n\tEventList\x12\"\n\x05\x65vent\x18\x01 \x03(\x0b\x32\x13.bank.EventResponse\"=\n\x0c\x42ranchEvents\x12\x0b\n\x03pid\x18\x01 \x01(\x05\x12 \n\x04\x64\x61ta\x18\x02 \x03(\x0b\x32\x12.bank.SubEventInfo\"=\n\x08SubEvent\x12\x0f\n\x07\x65ventid\x18\x01 \x01(\x05\x12 \n\x04\x64\x61ta\x18\x02 \x03(\x0b\x32\x12.bank.SubEventInfo\"7\n\x0cSubEventInfo\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x63lock\x18\x03 \x01(\x05*\"\n\x06Result\x12\x0b\n\x07\x46\x41ILURE\x10\x00\x12\x0b\n\x07SUCCESS\x10\x01\x32\xe6\x01\n\x06\x42ranch\x12\x38\n\x11Propagate_Deposit\x12\x0b.bank.Event\x1a\x14.bank.ResponseStatus\"\x00\x12\x39\n\x12Propagate_Withdraw\x12\x0b.bank.Event\x1a\x14.bank.ResponseStatus\"\x00\x12\x31\n\x0bMsgDelivery\x12\x0b.bank.Event\x1a\x13.bank.EventResponse\"\x00\x12\x34\n\tInitStubs\x12\x0f.bank.CustNodes\x1a\x14.bank.ResponseStatus\"\x00\x62\x06proto3'
 )
 
 _RESULT = _descriptor.EnumDescriptor(
@@ -43,8 +43,8 @@ _RESULT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=538,
-  serialized_end=572,
+  serialized_start=736,
+  serialized_end=770,
 )
 _sym_db.RegisterEnumDescriptor(_RESULT)
 
@@ -136,6 +136,13 @@ _EVENT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='clock', full_name='bank.Event.clock', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -149,7 +156,7 @@ _EVENT = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=111,
-  serialized_end=164,
+  serialized_end=179,
 )
 
 
@@ -194,8 +201,8 @@ _EVENTRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=166,
-  serialized_end=252,
+  serialized_start=181,
+  serialized_end=267,
 )
 
 
@@ -240,8 +247,8 @@ _INTERFACERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=254,
-  serialized_end=323,
+  serialized_start=269,
+  serialized_end=338,
 )
 
 
@@ -272,8 +279,8 @@ _CUSTNODES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=325,
-  serialized_end=370,
+  serialized_start=340,
+  serialized_end=385,
 )
 
 
@@ -311,8 +318,8 @@ _NODEPORTS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=372,
-  serialized_end=411,
+  serialized_start=387,
+  serialized_end=426,
 )
 
 
@@ -343,8 +350,8 @@ _RESPONSESTATUS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=413,
-  serialized_end=459,
+  serialized_start=428,
+  serialized_end=474,
 )
 
 
@@ -375,8 +382,8 @@ _BALANCE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=461,
-  serialized_end=487,
+  serialized_start=476,
+  serialized_end=502,
 )
 
 
@@ -407,8 +414,132 @@ _EVENTLIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=489,
-  serialized_end=536,
+  serialized_start=504,
+  serialized_end=551,
+)
+
+
+_BRANCHEVENTS = _descriptor.Descriptor(
+  name='BranchEvents',
+  full_name='bank.BranchEvents',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='pid', full_name='bank.BranchEvents.pid', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='data', full_name='bank.BranchEvents.data', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=553,
+  serialized_end=614,
+)
+
+
+_SUBEVENT = _descriptor.Descriptor(
+  name='SubEvent',
+  full_name='bank.SubEvent',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='eventid', full_name='bank.SubEvent.eventid', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='data', full_name='bank.SubEvent.data', index=1,
+      number=2, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=616,
+  serialized_end=677,
+)
+
+
+_SUBEVENTINFO = _descriptor.Descriptor(
+  name='SubEventInfo',
+  full_name='bank.SubEventInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='bank.SubEventInfo.id', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='bank.SubEventInfo.name', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='clock', full_name='bank.SubEventInfo.clock', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=679,
+  serialized_end=734,
 )
 
 _CUSTOMERSI.fields_by_name['events'].message_type = _EVENT
@@ -416,6 +547,8 @@ _EVENTRESPONSE.fields_by_name['respData'].message_type = _INTERFACERESPONSE
 _CUSTNODES.fields_by_name['idports'].message_type = _NODEPORTS
 _RESPONSESTATUS.fields_by_name['result'].enum_type = _RESULT
 _EVENTLIST.fields_by_name['event'].message_type = _EVENTRESPONSE
+_BRANCHEVENTS.fields_by_name['data'].message_type = _SUBEVENTINFO
+_SUBEVENT.fields_by_name['data'].message_type = _SUBEVENTINFO
 DESCRIPTOR.message_types_by_name['CustomersI'] = _CUSTOMERSI
 DESCRIPTOR.message_types_by_name['Event'] = _EVENT
 DESCRIPTOR.message_types_by_name['EventResponse'] = _EVENTRESPONSE
@@ -425,6 +558,9 @@ DESCRIPTOR.message_types_by_name['NodePorts'] = _NODEPORTS
 DESCRIPTOR.message_types_by_name['ResponseStatus'] = _RESPONSESTATUS
 DESCRIPTOR.message_types_by_name['Balance'] = _BALANCE
 DESCRIPTOR.message_types_by_name['EventList'] = _EVENTLIST
+DESCRIPTOR.message_types_by_name['BranchEvents'] = _BRANCHEVENTS
+DESCRIPTOR.message_types_by_name['SubEvent'] = _SUBEVENT
+DESCRIPTOR.message_types_by_name['SubEventInfo'] = _SUBEVENTINFO
 DESCRIPTOR.enum_types_by_name['Result'] = _RESULT
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -491,6 +627,27 @@ EventList = _reflection.GeneratedProtocolMessageType('EventList', (_message.Mess
   })
 _sym_db.RegisterMessage(EventList)
 
+BranchEvents = _reflection.GeneratedProtocolMessageType('BranchEvents', (_message.Message,), {
+  'DESCRIPTOR' : _BRANCHEVENTS,
+  '__module__' : 'customers_pb2'
+  # @@protoc_insertion_point(class_scope:bank.BranchEvents)
+  })
+_sym_db.RegisterMessage(BranchEvents)
+
+SubEvent = _reflection.GeneratedProtocolMessageType('SubEvent', (_message.Message,), {
+  'DESCRIPTOR' : _SUBEVENT,
+  '__module__' : 'customers_pb2'
+  # @@protoc_insertion_point(class_scope:bank.SubEvent)
+  })
+_sym_db.RegisterMessage(SubEvent)
+
+SubEventInfo = _reflection.GeneratedProtocolMessageType('SubEventInfo', (_message.Message,), {
+  'DESCRIPTOR' : _SUBEVENTINFO,
+  '__module__' : 'customers_pb2'
+  # @@protoc_insertion_point(class_scope:bank.SubEventInfo)
+  })
+_sym_db.RegisterMessage(SubEventInfo)
+
 
 
 _BRANCH = _descriptor.ServiceDescriptor(
@@ -500,43 +657,13 @@ _BRANCH = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=575,
-  serialized_end=945,
+  serialized_start=773,
+  serialized_end=1003,
   methods=[
-  _descriptor.MethodDescriptor(
-    name='Withdraw',
-    full_name='bank.Branch.Withdraw',
-    index=0,
-    containing_service=None,
-    input_type=_EVENT,
-    output_type=_EVENTRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='Deposit',
-    full_name='bank.Branch.Deposit',
-    index=1,
-    containing_service=None,
-    input_type=_EVENT,
-    output_type=_EVENTRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='Query',
-    full_name='bank.Branch.Query',
-    index=2,
-    containing_service=None,
-    input_type=_EVENT,
-    output_type=_EVENTRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
   _descriptor.MethodDescriptor(
     name='Propagate_Deposit',
     full_name='bank.Branch.Propagate_Deposit',
-    index=3,
+    index=0,
     containing_service=None,
     input_type=_EVENT,
     output_type=_RESPONSESTATUS,
@@ -546,7 +673,7 @@ _BRANCH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='Propagate_Withdraw',
     full_name='bank.Branch.Propagate_Withdraw',
-    index=4,
+    index=1,
     containing_service=None,
     input_type=_EVENT,
     output_type=_RESPONSESTATUS,
@@ -556,7 +683,7 @@ _BRANCH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='MsgDelivery',
     full_name='bank.Branch.MsgDelivery',
-    index=5,
+    index=2,
     containing_service=None,
     input_type=_EVENT,
     output_type=_EVENTRESPONSE,
@@ -566,7 +693,7 @@ _BRANCH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='InitStubs',
     full_name='bank.Branch.InitStubs',
-    index=6,
+    index=3,
     containing_service=None,
     input_type=_CUSTNODES,
     output_type=_RESPONSESTATUS,

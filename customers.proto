@@ -3,13 +3,11 @@ package bank;
 
 
 service Branch{
-    rpc Withdraw(Event) returns (EventResponse) {}
-    rpc Deposit(Event) returns (EventResponse) {}
-    rpc Query(Event) returns (EventResponse) {}
     rpc Propagate_Deposit(Event) returns (ResponseStatus) {}
     rpc Propagate_Withdraw(Event) returns (ResponseStatus) {}
     rpc MsgDelivery(Event) returns (EventResponse) {}
     rpc InitStubs(CustNodes) returns (ResponseStatus){}
+
 }
 
 
@@ -20,11 +18,14 @@ message CustomersI {
   int32 balance=4;
 }
 
+
 message Event {
   int32 id=1;
   string interface=2;
   int32 money=3;
+  int32 clock = 4;
 }
+
 
 message EventResponse {
   int32 id=1;
@@ -43,6 +44,7 @@ enum Result {
     SUCCESS = 1;
 }
 
+
 message CustNodes {
   repeated NodePorts idports = 1;
 }
@@ -60,7 +62,34 @@ message Balance {
   int32 balance = 1;
 }
 
+
 message EventList {
   repeated EventResponse event =1 ;
 }
+
+
+message BranchEvents {
+  int32 pid =1 ;
+  repeated SubEventInfo data =2;
+}
+
+
+message SubEvent {
+  int32 eventid =1;
+  repeated SubEventInfo data =2;
+}
+
+
+message SubEventInfo {
+  int32 id =1;
+  string name = 2;
+  int32 clock =3;
+}
+
+
+
+
+
+
+
 
